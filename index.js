@@ -7,8 +7,8 @@ import timezone from "dayjs/plugin/timezone.js";
 // --- ENV ---
 const token = process.env.xoxb - 7947599785828 - 9452324035553 - XI8tl7ZsuO86bICGJWM4lDFQ;       // xoxb-...
 const channel = process.env.C087WJ9UKV5;    // Cxxxxxxxx
-const LAT = process.env.CHECKIN_LAT || "37.5310";   // 기본: 서울시청 근처
-const LON = process.env.CHECKIN_LON || "126.9140";
+const LAT = process.env.CHECKIN_LAT
+const LON = process.env.CHECKIN_LON
 
 
 if (!token || !channel) {

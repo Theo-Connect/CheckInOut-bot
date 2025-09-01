@@ -23,7 +23,7 @@ jobs:
       - name: Post to Slack
         run: node index.js
         env:
-          SLACK_BOT_TOKEN: ${{ secrets.xoxb - 7947599785828 - 9452324035553 - XI8tl7ZsuO86bICGJWM4lDFQ }}
-          SLACK_CHANNEL_ID: ${{ secrets.C087WJ9UKV5 }}
-          CHECKIN_LAT: ${{ env.37.5310 }}
-          CHECKIN_LON: ${{ env.126.9140 }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+          CHECKIN_LAT: "37.5310"
+          CHECKIN_LON: "126.9140"
