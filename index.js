@@ -5,10 +5,10 @@ import utc from "dayjs/plugin/utc.js";
 import timezone from "dayjs/plugin/timezone.js";
 
 // --- ENV ---
-const token = process.env.xoxb - 7947599785828 - 9452324035553 - XI8tl7ZsuO86bICGJWM4lDFQ;       // xoxb-...
-const channel = process.env.C087WJ9UKV5;    // Cxxxxxxxx
-const LAT = process.env.CHECKIN_LAT
-const LON = process.env.CHECKIN_LON
+const token = process.env.SLACK_BOT_TOKEN;
+const channel = process.env.SLACK_CHANNEL_ID;
+const LAT = process.env.CHECKIN_LAT || "37.5310";
+const LON = process.env.CHECKIN_LON || "126.9140";
 
 
 if (!token || !channel) {
