@@ -63,19 +63,8 @@ async function main() {
     const weatherEmoji = await getWeatherEmoji();
 
     const text =
-        `데일리 체크인&아웃 | ${dateStr} | ${weekdayKo} | ${weatherEmoji}
-이 스레드에 오늘의 체크인/아웃을 댓글로 남겨주세요!
-
-[템플릿]
-🌟 체크인
-- 업무 (Todo + 예상 시간 or 🍅)
-- 몸/마음 (각각 숫자 + 한줄 코멘트)
-- 오늘 집중 포인트
-
-✅ 체크 아웃
-- 완료 vs 계획
-- 성과/배움
-- 개선/내일 인계`;
+        `*데일리 체크인&아웃 | ${dateStr} | ${weekdayKo} | ${weatherEmoji}*
+  • 이 스레드에 오늘의 체크인/아웃을 댓글로 남겨주세요!`;
 
     const client = new WebClient(token);
     try {
