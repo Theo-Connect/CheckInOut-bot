@@ -1,0 +1,13 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# macOS
+.DS_Store
+
+# Logs
+*.log
+
+# Environment variables
+.env
+.env.local
