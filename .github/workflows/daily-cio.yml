@@ -25,5 +25,6 @@ jobs:
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
           SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+          KOREAN_HOLIDAY_API_KEY: ${{ secrets.KOREAN_HOLIDAY_API_KEY }}
           CHECKIN_LAT: "37.5310"
           CHECKIN_LON: "126.9140"

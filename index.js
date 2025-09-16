@@ -24,6 +24,32 @@ const nowKST = dayjs().tz("Asia/Seoul");
 const dateStr = nowKST.format("YYYY/MM/DD");
 const weekdayKo = nowKST.format("dd");
 
+// --- 한국 공휴일 체크 (공공데이터포털 API) ---
+async function isKoreanHoliday(date) {
+    const year = date.year();
+    const month = String(date.month() + 1).padStart(2, '0');
+    const apiKey = process.env.KOREAN_HOLIDAY_API_KEY || "n026MeHJSm4C99Q5N%2B9cGW%2FJThP8z1XnCm4RLL%2BI9uQqdwSTaBQOcGNP5SPVP0veNwmaIWY0ZtF55E2LZxiu5A%3D%3D";
+    
+    try {
+        const url = `https://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo?serviceKey=${apiKey}&solYear=${year}&solMonth=${month}`;
+        const res = await fetch(url);
+        
+        if (!res.ok) {
+            console.warn('공휴일 API 호출 실패, 평일로 간주');
+            return false;
+        }
+        
+        const text = await res.text();
+        const dateString = `${year}${month}${String(date.date()).padStart(2, '0')}`;
+        
+        // XML에서 해당 날짜가 공휴일인지 확인
+        return text.includes(`<locdate>${dateString}</locdate>`);
+    } catch (e) {
+        console.warn('공휴일 확인 실패, 평일로 간주:', e.message);
+        return false;
+    }
+}
+
 // --- WMO 코드 → 이모지 매핑 ---
 function wmoToEmoji(code) {
     const c = Number(code);
@@ -60,6 +86,20 @@ async function getWeatherEmoji() {
 }
 
 async function main() {
+    // 공휴일 체크
+    const isHoliday = await isKoreanHoliday(nowKST);
+    if (isHoliday) {
+        console.log(`${dateStr}은 공휴일입니다. 메시지를 보내지 않습니다.`);
+        return;
+    }
+    
+    // 주말 체크 (추가 안전장치)
+    const dayOfWeek = nowKST.day(); // 0=일요일, 6=토요일
+    if (dayOfWeek === 0 || dayOfWeek === 6) {
+        console.log(`${dateStr}은 주말입니다. 메시지를 보내지 않습니다.`);
+        return;
+    }
+    
     const weatherEmoji = await getWeatherEmoji();
 
     const text =
