@@ -2,7 +2,7 @@ name: Post Slack Daily Check-in (Weekdays 05:00 KST)
 
 on:
   schedule:
-    - cron: "0 20 * * 1-5"   # 월~금, 20:00 UTC = KST+9 → 05:00
+    - cron: "0 20 * * 0,1-4"   # 일,월,화,수,목 UTC 20:00 = 월~금 KST 05:00
   workflow_dispatch: {}       # 필요시 수동 실행 옵션
 
 jobs:
