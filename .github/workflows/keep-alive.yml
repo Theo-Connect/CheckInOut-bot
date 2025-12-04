@@ -8,23 +8,13 @@ on:
 jobs:
   keep-alive:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Keep alive
-        run: |
-          echo "$(date): Keep repository active" >> .github/keep-alive.log
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add .github/keep-alive.log
-          if git diff --staged --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "Keep repository active - $(date +%Y%m%d)"
-            git push
-          fi
+        uses: gautamkrishnar/keepalive-workflow@v2
+        with:
+          commit_message: "Keep repository active"
+          committer_username: "github-actions[bot]"
+          committer_email: "github-actions[bot]@users.noreply.github.com"
