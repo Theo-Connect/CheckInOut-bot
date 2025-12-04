@@ -1,0 +1,24 @@
+name: Keep Repository Active
+
+on:
+  schedule:
+    - cron: "0 0 1 * *"  # 매월 1일 00:00 UTC
+  workflow_dispatch: {}
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Keep alive
+        run: |
+          echo "$(date): Keep repository active" >> .github/keep-alive.log
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .github/keep-alive.log
+          git commit -m "Keep repository active - $(date +%Y%m%d)" || exit 0
+          git push
