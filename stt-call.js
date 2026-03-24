@@ -34,7 +34,7 @@ async function isKoreanHoliday(date) {
     }
 
     try {
-        const url = `https://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo?serviceKey=${apiKey}&solYear=${year}&solMonth=${month}`;
+        const url = `https://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo?serviceKey=${encodeURIComponent(apiKey)}&solYear=${year}&solMonth=${month}`;
         const res = await fetch(url);
 
         if (!res.ok) {
