@@ -1,0 +1,30 @@
+name: Post Slack Daily STT Call (Weekdays 08:00 KST)
+
+on:
+  schedule:
+    - cron: "0 23 * * 0-4"    # 일~목 UTC 23:00 = 월~금 KST 08:00
+  workflow_dispatch: {}       # 필요시 수동 실행 옵션
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Post to Slack
+        run: node stt-call.js
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          STT_SLACK_CHANNEL_ID: ${{ secrets.STT_SLACK_CHANNEL_ID }}
+          KOREAN_HOLIDAY_API_KEY: ${{ secrets.KOREAN_HOLIDAY_API_KEY }}
+          CHECKIN_LAT: "37.5310"
+          CHECKIN_LON: "126.9140"

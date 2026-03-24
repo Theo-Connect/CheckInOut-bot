@@ -1,11 +1,15 @@
 # CheckInOut-bot (CIO)
 
-슬랙 Daily check in-out을 위한 자동화 봇
+슬랙 Daily 메시지 자동화 봇
 
 ## 📋 개요
 
-매일 평일 오전 5시(KST)에 슬랙 채널에 체크인/아웃 메시지를 자동으로 전송하는 GitHub Actions 기반 봇입니다.
+GitHub Actions 기반으로 평일마다 슬랙 채널에 자동 메시지를 전송하는 봇입니다.
 한국 공휴일을 자동으로 확인하여 평일에만 메시지를 전송합니다.
+
+현재 운영 중인 봇:
+- **데일리 체크인&아웃 봇** — 평일 오전 5:00 KST
+- **STT 작업 콜 봇** — 평일 오전 8:00 KST
 
 ## ✨ 주요 기능
 
@@ -32,8 +36,9 @@ Repository Settings > Secrets and variables > Actions에서 다음 설정:
 | Secret Name | 설명 | 예시 |
 |-------------|------|------|
 | `SLACK_BOT_TOKEN` | Slack 봇 토큰 | `xoxb-...` |
-| `SLACK_CHANNEL_ID` | 메시지를 보낼 채널 ID | `C087WJ9UKV5` |
-| `KOREAN_HOLIDAY_API_KEY` | 공공데이터포털 API 키 | `n026MeHJSm4C99Q5N%2B9cGW%2FJThP8z1XnCm4RLL%2BI9uQqdwSTaBQOcGNP5SPVP0veNwmaIWY0ZtF55E2LZxiu5A%3D%3D` |
+| `SLACK_CHANNEL_ID` | 체크인&아웃 채널 ID | `C087WJ9UKV5` |
+| `STT_SLACK_CHANNEL_ID` | STT 작업 콜 채널 ID | `C0AAXE9A2PL` |
+| `KOREAN_HOLIDAY_API_KEY` | 공공데이터포털 API 키 | `your-api-key` |
 
 ### 3. Slack 앱 설정
 
@@ -52,11 +57,14 @@ Repository Settings > Secrets and variables > Actions에서 다음 설정:
 
 ## 📅 실행 스케줄
 
-- **실행 시간**: 평일 오전 5:00 KST
-- **실행 요일**: 월요일 ~ 금요일
-- **제외 조건**: 한국 공휴일, 주말
+| 봇 | 실행 시간 | 실행 요일 | 제외 조건 |
+|----|----------|----------|----------|
+| 데일리 체크인&아웃 | 오전 5:00 KST | 월~금 | 공휴일, 주말 |
+| STT 작업 콜 | 오전 8:00 KST | 월~금 | 공휴일, 주말 |
 
 ## 📝 메시지 형식
+
+### 데일리 체크인&아웃
 
 ```
 데일리 체크인&아웃 | 2025/09/22 | 월 | 🌤️
@@ -74,21 +82,39 @@ Repository Settings > Secrets and variables > Actions에서 다음 설정:
 - 개선/내일 인계
 ```
 
+### STT 작업 콜
+
+```
+데일리 STT 작업 콜 | 2025/09/22 | 월 | ☀️
+
+이 스레드에 오늘의 STT 검수 작업 우선순위 및 작업 콜을 댓글로 남겨주세요!
+우선순위에 대한 별도의 안내가 없는 경우, 어드민 화면에 제시된 순서대로 작업해주세요.
+
+STT 작업을 들어가시거나 완료했다면 아래의 형식으로 꼭 티를 내 주세요! ✅
+- 시작 콜 ex. 화민 | 책읽기 | 미션 1, 2 | 진행
+- 완료 콜 ex. 화민 | 책읽기 | 미션 1, 2 | 완료
+```
+
 ## 🛠️ 로컬 테스트
 
 ```bash
 # 환경변수 설정
 export SLACK_BOT_TOKEN="your-bot-token"
 export SLACK_CHANNEL_ID="your-channel-id"
+export STT_SLACK_CHANNEL_ID="your-stt-channel-id"
 export KOREAN_HOLIDAY_API_KEY="your-api-key"
 
-# 실행
+# 체크인&아웃 봇 실행
 node index.js
+
+# STT 작업 콜 봇 실행
+node stt-call.js
 ```
 
 ## 🔧 수동 실행
 
-GitHub Repository > Actions > "Post Slack Daily Check-in" > "Run workflow"
+- **체크인&아웃**: GitHub Repository > Actions > "Post Slack Daily Check-in" > "Run workflow"
+- **STT 작업 콜**: GitHub Repository > Actions > "Post Slack Daily STT Call" > "Run workflow"
 
 ## 📊 사용된 기술
 
@@ -104,8 +130,11 @@ GitHub Repository > Actions > "Post Slack Daily Check-in" > "Run workflow"
 ```
 CheckInOut-bot/
 ├── .github/workflows/
-│   └── daily-cio.yml          # GitHub Actions 워크플로우
-├── index.js                   # 메인 봇 로직
+│   ├── daily-cio.yml          # 체크인&아웃 워크플로우
+│   ├── daily-stt-call.yml     # STT 작업 콜 워크플로우
+│   └── keep-alive.yml         # Repository 활성 유지
+├── index.js                   # 체크인&아웃 봇 로직
+├── stt-call.js                # STT 작업 콜 봇 로직
 ├── package.json               # 의존성 관리
 ├── .gitignore                 # Git 제외 파일
 └── README.md                  # 프로젝트 문서
