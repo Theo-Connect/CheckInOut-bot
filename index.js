@@ -28,7 +28,11 @@ const weekdayKo = nowKST.format("dd");
 async function isKoreanHoliday(date) {
     const year = date.year();
     const month = String(date.month() + 1).padStart(2, '0');
-    const apiKey = process.env.KOREAN_HOLIDAY_API_KEY || "n026MeHJSm4C99Q5N%2B9cGW%2FJThP8z1XnCm4RLL%2BI9uQqdwSTaBQOcGNP5SPVP0veNwmaIWY0ZtF55E2LZxiu5A%3D%3D";
+    const apiKey = process.env.KOREAN_HOLIDAY_API_KEY;
+    if (!apiKey) {
+        console.warn('KOREAN_HOLIDAY_API_KEY 미설정, 공휴일 체크를 건너뜁니다.');
+        return false;
+    }
     
     try {
         const url = `https://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo?serviceKey=${apiKey}&solYear=${year}&solMonth=${month}`;
@@ -42,8 +46,9 @@ async function isKoreanHoliday(date) {
         const text = await res.text();
         const dateString = `${year}${month}${String(date.date()).padStart(2, '0')}`;
         
-        // XML에서 해당 날짜가 공휴일인지 확인
-        return text.includes(`<locdate>${dateString}</locdate>`);
+        // XML 응답에서 locdate 태그들을 추출하여 정확히 매칭
+        const holidays = [...text.matchAll(/<locdate>(\d{8})<\/locdate>/g)].map(m => m[1]);
+        return holidays.includes(dateString);
     } catch (e) {
         console.warn('공휴일 확인 실패, 평일로 간주:', e.message);
         return false;
@@ -102,9 +107,19 @@ async function main() {
     
     const weatherEmoji = await getWeatherEmoji();
 
-    const text =
-        `*데일리 체크인&아웃 | ${dateStr} | ${weekdayKo} | ${weatherEmoji}*
-  • 이 스레드에 오늘의 체크인/아웃을 댓글로 남겨주세요!`;
+    const text = `*데일리 체크인&아웃 | ${dateStr} | ${weekdayKo} | ${weatherEmoji}*
+이 스레드에 오늘의 체크인/아웃을 댓글로 남겨주세요!
+
+[템플릿]
+🌟 체크인
+- 업무 (Todo + 예상 시간 or 🍅)
+- 몸/마음 (각각 숫자 + 한줄 코멘트)
+- 오늘 집중 포인트
+
+✅ 체크 아웃
+- 완료 vs 계획
+- 성과/배움
+- 개선/내일 인계`;
 
     const client = new WebClient(token);
     try {
