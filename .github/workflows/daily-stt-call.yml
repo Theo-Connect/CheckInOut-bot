@@ -1,8 +1,8 @@
-name: Post Slack Daily STT Call (Weekdays 08:00 KST)
+name: Post Slack Daily STT Call (Weekdays 00:01 KST)
 
 on:
   schedule:
-    - cron: "0 23 * * 0-4"    # 일~목 UTC 23:00 = 월~금 KST 08:00
+    - cron: "1 15 * * 0-4"    # 일~목 UTC 15:01 = 월~금 KST 00:01
   workflow_dispatch: {}       # 필요시 수동 실행 옵션
 
 jobs:
